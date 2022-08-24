@@ -58,6 +58,7 @@ public class TestItListener extends TestListenerAdapter {
             }
             try {
                 logger.info("Загрузка результатов тест-рана {}", autotestResultsList);
+                System.out.println("autotestResultsList: " + autotestResultsList);
                 testItApi.getTestRunsClient().setAutoTestsResults(testItSettings.testRunId(), autotestResultsList);
             } catch (Exception e) {
                 logger.error("Не удалось загрузить результаты тест-рана {}", e.getMessage());
