@@ -1,10 +1,12 @@
-package com.github.stealthdron.testng.allure.model;
+package com.github.stealthydron.testng.allure.model;
 
-import com.github.stealthydron.testit.client.TestItApi;
-import com.github.stealthydron.testit.client.dto.Attachment;
-import com.github.stealthydron.testit.client.dto.AutotestResults;
-import com.github.stealthydron.testit.client.dto.AutotestResultsStep;
+import com.github.avpyanov.testit.client.TestItApi;
+import com.github.avpyanov.testit.client.dto.Attachment;
+import com.github.avpyanov.testit.client.dto.AutotestResults;
+import com.github.avpyanov.testit.client.dto.AutotestResultsStep;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -18,6 +20,7 @@ public class AllureResultsMapper {
 
     private final TestItApi testItApi;
     private final String allureResultsDirectoryPattern;
+    private static final Logger logger = LogManager.getLogger(AllureResultsMapper.class);
 
     public AllureResultsMapper(TestItApi testItApi, String allureResultsDirectoryPattern) {
         this.allureResultsDirectoryPattern = allureResultsDirectoryPattern;
@@ -61,17 +64,20 @@ public class AllureResultsMapper {
                 List<Attachment> testItAttachments = new ArrayList<>();
                 for (AllureAttachment attachment : flattenAllureStep.getAttachments()) {
                     String filePath = String.format(allureResultsDirectoryPattern, attachment.getSource());
-                    Attachment testItAttachment = testItApi.getAttachmentsClient().createAttachment(new File(filePath));
-                    testItAttachments.add(testItAttachment);
+                    try {
+                        Attachment testItAttachment = testItApi.getAttachmentsClient().createAttachment(new File(filePath));
+                        testItAttachments.add(testItAttachment);
+                    } catch (Exception e) {
+                        logger.error("Не удалось загрузить вложения {}", filePath);
+                    }
                 }
                 autotestResultsStep.setAttachments(testItAttachments);
             }
-
             autotestResultsSteps.add(autotestResultsStep);
         }
 
         testItAutotest.setStepResults(autotestResultsSteps);
-
+        logger.info("TestIt autotest {}", testItAutotest);
         return testItAutotest;
     }
 

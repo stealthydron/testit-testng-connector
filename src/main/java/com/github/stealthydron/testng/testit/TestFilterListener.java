@@ -1,8 +1,8 @@
-package com.github.stealthdron.testng.testit;
+package com.github.stealthydron.testng.testit;
 
-import com.github.stealthydron.testit.annotations.AutotestId;
-import com.github.stealthydron.testit.client.TestItApi;
-import com.github.stealthydron.testit.client.dto.TestResult;
+import com.github.avpyanov.testit.annotations.AutotestId;
+import com.github.avpyanov.testit.client.TestItApi;
+import com.github.avpyanov.testit.client.dto.TestResult;
 import org.aeonbits.owner.ConfigFactory;
 import org.testng.IMethodInstance;
 import org.testng.IMethodInterceptor;

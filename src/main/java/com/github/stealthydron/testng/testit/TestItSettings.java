@@ -1,4 +1,4 @@
-package com.github.stealthdron.testng.testit;
+package com.github.stealthydron.testng.testit;
 
 import org.aeonbits.owner.Config;
 

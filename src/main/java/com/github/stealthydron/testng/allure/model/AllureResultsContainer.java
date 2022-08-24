@@ -1,4 +1,4 @@
-package com.github.stealthdron.testng.allure.model;
+package com.github.stealthydron.testng.allure.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

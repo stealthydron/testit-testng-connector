@@ -1,10 +1,10 @@
-package com.github.stealthdron.testng.testit;
+package com.github.stealthydron.testng.testit;
 
-import com.github.stealthdron.testng.allure.model.AllureResultsContainer;
-import com.github.stealthdron.testng.allure.model.AllureResultsMapper;
-import com.github.stealthdron.testng.allure.model.Link;
-import com.github.stealthydron.testit.client.TestItApi;
-import com.github.stealthydron.testit.client.dto.AutotestResults;
+import com.github.avpyanov.testit.client.TestItApi;
+import com.github.avpyanov.testit.client.dto.AutotestResults;
+import com.github.stealthydron.testng.allure.model.AllureResultsContainer;
+import com.github.stealthydron.testng.allure.model.AllureResultsMapper;
+import com.github.stealthydron.testng.allure.model.Link;
 import com.google.gson.Gson;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
@@ -56,7 +56,12 @@ public class TestItListener extends TestListenerAdapter {
                     }
                 }
             }
-            testItApi.getTestRunsClient().setAutoTestsResults(testItSettings.testRunId(), autotestResultsList);
+            try {
+                logger.info("Загрузка результатов тест-рана {}", autotestResultsList);
+                testItApi.getTestRunsClient().setAutoTestsResults(testItSettings.testRunId(), autotestResultsList);
+            } catch (Exception e) {
+                logger.error("Не удалось загрузить результаты тест-рана {}", e.getMessage());
+            }
         }
     }
 
