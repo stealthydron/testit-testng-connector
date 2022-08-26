@@ -43,6 +43,7 @@ public class AllureResultsMapper {
 
         if (!allureResultsContainer.getAttachments().isEmpty()) {
             List<Attachment> attachments = createAttachments(allureResultsContainer.getAttachments(), allureResultsDirectoryPattern, testItApi);
+            System.out.println("Test attach:"+attachments);
             testItAutotest.setAttachments(attachments);
         }
 
@@ -69,6 +70,7 @@ public class AllureResultsMapper {
 
             if (!flattenAllureStep.getAttachments().isEmpty()) {
                 List<Attachment> attachments = createAttachments(flattenAllureStep.getAttachments(), allureResultsDirectoryPattern, testItApi);
+                System.out.println("step attach:"+attachments);
                 autotestResultsStep.setAttachments(attachments);
             }
             autotestResultsSteps.add(autotestResultsStep);
