@@ -28,6 +28,7 @@ public class AllureResultsMapper {
     }
 
     public AutotestResults mapToTestItResults(AllureResultsContainer allureResultsContainer) {
+        System.out.println(allureResultsContainer);
         final AutotestResults testItAutotest = new AutotestResults();
 
         testItAutotest.setOutcome(StringUtils.capitalize(allureResultsContainer.getStatus()));
