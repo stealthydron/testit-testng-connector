@@ -40,6 +40,11 @@ public class AllureResultsMapper {
             testItAutotest.setTraces(allureResultsContainer.getStatusDetails().getTrace());
         }
 
+        if (!allureResultsContainer.getAttachments().isEmpty()) {
+            List<Attachment> attachments = createAttachments(allureResultsContainer.getAttachments(), allureResultsDirectoryPattern, testItApi);
+            testItAutotest.setAttachments(attachments);
+        }
+
         List<AutotestResultsStep> autotestResultsSteps = new ArrayList<>();
         List<AllureResultsStep> flattenAllureSteps = flattenSteps(allureResultsContainer.getSteps());
 
@@ -53,6 +58,7 @@ public class AllureResultsMapper {
             long duration = TimeUnit.MILLISECONDS.convert(flattenAllureStep.getStop() - flattenAllureStep.getStart(), TimeUnit.MILLISECONDS);
             autotestResultsStep.setDuration(duration);
 
+
             if (!flattenAllureStep.getParameters().isEmpty()) {
                 Map<String, String> parametersMap = flattenAllureStep.getParameters()
                         .stream()
@@ -61,17 +67,8 @@ public class AllureResultsMapper {
             }
 
             if (!flattenAllureStep.getAttachments().isEmpty()) {
-                List<Attachment> testItAttachments = new ArrayList<>();
-                for (AllureAttachment attachment : flattenAllureStep.getAttachments()) {
-                    String filePath = String.format(allureResultsDirectoryPattern, attachment.getSource());
-                    try {
-                        Attachment testItAttachment = testItApi.getAttachmentsClient().createAttachment(new File(filePath));
-                        testItAttachments.add(testItAttachment);
-                    } catch (Exception e) {
-                        logger.error("Не удалось загрузить вложения {}", filePath);
-                    }
-                }
-                autotestResultsStep.setAttachments(testItAttachments);
+                List<Attachment> attachments = createAttachments(flattenAllureStep.getAttachments(), allureResultsDirectoryPattern, testItApi);
+                autotestResultsStep.setAttachments(attachments);
             }
             autotestResultsSteps.add(autotestResultsStep);
         }
@@ -96,5 +93,21 @@ public class AllureResultsMapper {
             }
         }
         return flattenSteps;
+    }
+
+    private List<Attachment> createAttachments(List<AllureAttachment> allureAttachmentList,
+                                                      String allureResultsDirectoryPattern,
+                                                      TestItApi testItApi) {
+        List<Attachment> attachments = new ArrayList<>();
+        for (AllureAttachment attachment : allureAttachmentList) {
+            String filePath = String.format(allureResultsDirectoryPattern, attachment.getSource());
+            try {
+                Attachment testItAttachment = testItApi.getAttachmentsClient().createAttachment(new File(filePath));
+                attachments.add(testItAttachment);
+            } catch (Exception e) {
+                logger.error("Не удалось загрузить вложения {}", filePath);
+            }
+        }
+        return attachments;
     }
 }
